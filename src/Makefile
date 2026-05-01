@@ -104,6 +104,7 @@ test-run: $(KERNEL_IMG) $(INITRAMFS_IMG)
 .PHONY: clean
 clean:
 	rm -rf *~ $(BUILDDIR) $(INITRAMFS_BUILDDIR) *.prepared
+	rm -rf $(SHIM_DIR)/target
 
 # separate target to avoid that source package build removes this, called by top-level clean target
 clean-pkgs:
