@@ -1,4 +1,4 @@
-use anyhow::{bail, Error};
+use anyhow::{anyhow, bail, Error};
 use std::ffi::CStr;
 use std::fs;
 use std::path::PathBuf;
@@ -6,8 +6,6 @@ use std::process::Command;
 
 const URANDOM_MAJ: u64 = 1;
 const URANDOM_MIN: u64 = 9;
-const ZFS_MAJ: u64 = 10;
-const ZFS_MIN: u64 = 249;
 const NULL_MAJ: u64 = 1;
 const NULL_MIN: u64 = 3;
 
@@ -32,7 +30,11 @@ fn main() {
     wrap_err("mknod /dev/urandom", || {
         do_mknod("/dev/urandom", URANDOM_MAJ, URANDOM_MIN)
     });
-    wrap_err("mknod /dev/zfs", || do_mknod("/dev/zfs", ZFS_MAJ, ZFS_MIN));
+    // /dev/zfs is a misc device whose minor is assigned dynamically
+    // (MISC_DYNAMIC_MINOR), so look it up via sysfs instead of hardcoding
+    wrap_err("mknod /dev/zfs", || {
+        mknod_from_sysfs("/dev/zfs", "/sys/class/misc/zfs/dev")
+    });
     wrap_err("mknod /dev/null", || {
         do_mknod("/dev/null", NULL_MAJ, NULL_MIN)
     });
@@ -74,9 +76,7 @@ fn run_agetty() -> Result<(), Error> {
         bail!("ttyS1 device does not exist");
     }
 
-    let dev = fs::read_to_string("/sys/class/tty/ttyS1/dev")?;
-    let (tty_maj, tty_min) = dev.trim().split_at(dev.find(':').unwrap_or(1));
-    do_mknod("/dev/ttyS1", tty_maj.parse()?, tty_min[1..].parse()?)?;
+    mknod_from_sysfs("/dev/ttyS1", "/sys/class/tty/ttyS1/dev")?;
 
     let getty_args = [
         "-a",
@@ -127,6 +127,15 @@ fn do_mknod(path: &str, maj: u64, min: u64) -> Result<(), Error> {
     let dev = stat::makedev(maj, min);
     stat::mknod(path, stat::SFlag::S_IFCHR, stat::Mode::S_IRWXU, dev)?;
     Ok(())
+}
+
+fn mknod_from_sysfs(path: &str, sysfs_dev: &str) -> Result<(), Error> {
+    let raw = fs::read_to_string(sysfs_dev)?;
+    let (maj, min) = raw
+        .trim()
+        .split_once(':')
+        .ok_or_else(|| anyhow!("malformed {sysfs_dev}: {:?}", raw.trim()))?;
+    do_mknod(path, maj.parse()?, min.parse()?)
 }
 
 fn read_uptime() -> f32 {
