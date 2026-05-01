@@ -39,11 +39,15 @@ fn main() {
         do_mknod("/dev/null", NULL_MAJ, NULL_MIN)
     });
 
-    // tell busybox to symlink its binaries
+    // tell busybox to symlink its binaries; wait for completion so anything
+    // started afterwards (daemon helpers, debug shell) sees the symlinks
     wrap_err("busybox --install -s", || {
-        Command::new("/bin/busybox")
+        let status = Command::new("/bin/busybox")
             .args(["--install", "-s"])
-            .spawn()?;
+            .status()?;
+        if !status.success() {
+            bail!("busybox --install -s exited with {status}");
+        }
         Ok(())
     });
 
