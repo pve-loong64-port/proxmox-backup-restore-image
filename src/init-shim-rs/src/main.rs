@@ -1,4 +1,4 @@
-use anyhow::{anyhow, bail, Error};
+use anyhow::{Error, anyhow, bail};
 use std::ffi::CStr;
 use std::fs;
 use std::path::PathBuf;
@@ -70,7 +70,7 @@ const fn get_restore_image_version() -> &'static str {
 }
 
 fn run_agetty() -> Result<(), Error> {
-    use nix::unistd::{fork, ForkResult};
+    use nix::unistd::{ForkResult, fork};
 
     if !PathBuf::from("/sbin/agetty").exists() {
         bail!("/sbin/agetty not found, probably not running debug mode and safe to ignore");
@@ -113,7 +113,7 @@ fn run_agetty() -> Result<(), Error> {
 }
 
 fn do_mount(target: &str, fstype: &str) -> Result<(), Error> {
-    use nix::mount::{mount, MsFlags};
+    use nix::mount::{MsFlags, mount};
     fs::create_dir_all(target)?;
     let none_type: Option<&CStr> = None;
     mount(
