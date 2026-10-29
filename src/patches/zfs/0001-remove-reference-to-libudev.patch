@@ -9,17 +9,18 @@ Signed-off-by: Stefan Reiter <s.reiter@proxmox.com>
 [ SI adapt to aebd94cc8541e0ec3b1de57edbd57c4280213089 ]
 Signed-off-by: Stoiko Ivanov <s.ivanov@proxmox.com>
 ---
- config/user-libudev.m4 | 17 -----------------
- config/user.m4         |  1 -
- 2 files changed, 18 deletions(-)
+ config/user-libudev.m4 | 18 ------------------
+ config/user.m4        |  1 -
+ 2 files changed, 19 deletions(-)
  delete mode 100644 config/user-libudev.m4
 
 diff --git a/config/user-libudev.m4 b/config/user-libudev.m4
 deleted file mode 100644
-index 8c3c1d7e0..000000000
+index 784cf4651..000000000
 --- a/config/user-libudev.m4
 +++ /dev/null
-@@ -1,17 +0,0 @@
+@@ -1,18 +0,0 @@
+-dnl # SPDX-License-Identifier: CDDL-1.0
 -dnl #
 -dnl # Check for libudev - needed for vdev auto-online and auto-replace
 -dnl #
@@ -38,14 +39,13 @@ index 8c3c1d7e0..000000000
 -	])
 -])
 diff --git a/config/user.m4 b/config/user.m4
-index 6ec27a5b2..46244f19b 100644
+index 1ecd4ddde..ab7f39a5a 100644
 --- a/config/user.m4
 +++ b/config/user.m4
-@@ -14,7 +14,6 @@ AC_DEFUN([ZFS_AC_CONFIG_USER], [
+@@ -15,6 +15,5 @@ AC_DEFUN([ZFS_AC_CONFIG_USER], [
  	AM_COND_IF([BUILD_LINUX], [
  		ZFS_AC_CONFIG_USER_UDEV
  		ZFS_AC_CONFIG_USER_SYSTEMD
 -		ZFS_AC_CONFIG_USER_LIBUDEV
  		ZFS_AC_CONFIG_USER_LIBUUID
  		ZFS_AC_CONFIG_USER_LIBBLKID
- 	])
