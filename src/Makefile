@@ -7,6 +7,7 @@ PWD=$(shell pwd)
 ZFSONLINUX_SUBMODULE=submodules/zfsonlinux
 KERNEL_SUBMODULE=submodules/ubuntu-kernel
 SHIM_DIR=init-shim-rs
+RUST_TARGET ?= $(or $(DEB_HOST_RUST_TYPE),$(CARGO_BUILD_TARGET),$(shell rustc -vV | sed -n 's/^host: //p'))
 
 KERNEL_IMG=$(BUILDDIR)/bzImage
 INITRAMFS_IMG=$(INITRAMFS_BUILDDIR)/initramfs.img
@@ -87,8 +88,8 @@ $(ZFS_TOOLS): zfs.prepared
 	$(MAKE) -C $(BUILDDIR)/$(ZFSONLINUX_SUBMODULE) install DESTDIR=$(PWD)/$(ZFS_TOOLS)
 
 $(INITRAMFS_IMG): $(BUILDDIR).prepared $(RUST_SRC) build_initramfs.sh $(ZFS_TOOLS)
-	cd $(SHIM_DIR); cargo build --release
-	sh build_initramfs.sh
+	cd $(SHIM_DIR); CARGO_BUILD_TARGET=$(RUST_TARGET) cargo build --release
+	INIT="$(abspath $(SHIM_DIR)/target/$(RUST_TARGET)/release/init-shim-rs)" sh build_initramfs.sh
 
 $(INITRAMFS_IMG_DBG): $(INITRAMFS_IMG)
 
