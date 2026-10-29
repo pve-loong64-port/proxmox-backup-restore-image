@@ -14,10 +14,10 @@ Signed-off-by: Stefan Reiter <s.reiter@proxmox.com>
  1 file changed, 3 insertions(+)
 
 diff --git a/kernel/panic.c b/kernel/panic.c
-index ea1c5fcb2d19..c317ca992a26 100644
+index c78600212b6c..04f53b5385c4 100644
 --- a/kernel/panic.c
 +++ b/kernel/panic.c
-@@ -417,6 +417,9 @@ void panic(const char *fmt, ...)
+@@ -732,6 +732,9 @@ void vpanic(const char *fmt, va_list args)
  		}
  	}
  	if (panic_timeout != 0) {

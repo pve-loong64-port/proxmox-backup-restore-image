@@ -19,12 +19,11 @@ Signed-off-by: Stefan Reiter <s.reiter@proxmox.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
-index c58453699ee9..62a609444e12 100644
+index f91704731057..c3619c05ae21 100644
 --- a/include/linux/virtio_vsock.h
 +++ b/include/linux/virtio_vsock.h
-@@ -112,7 +112,7 @@ static inline size_t virtio_vsock_skb_len(struct sk_buff *skb)
- 
- #define VIRTIO_VSOCK_DEFAULT_RX_BUF_SIZE	(1024 * 4)
+@@ -138,6 +138,6 @@ static inline size_t virtio_vsock_skb_len(struct sk_buff *skb)
+ #define VIRTIO_VSOCK_DEFAULT_RX_BUF_SIZE	SKB_WITH_OVERHEAD(1024 * 4)
  #define VIRTIO_VSOCK_MAX_BUF_SIZE		0xFFFFFFFFUL
 -#define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE		(1024 * 64)
 +#define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE		(1024 * 4)

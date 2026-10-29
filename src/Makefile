@@ -17,6 +17,10 @@ ZFS_TOOLS=$(BUILDDIR)/zfstools
 
 CONFIG=config-base
 
+# The Ubuntu objtool livepatch code requires helpers absent from this kernel.
+# Restore images do not use livepatching, so omit that optional support.
+OBJTOOL_OPTS=HAVE_XXHASH=n
+
 RUST_SRC=$(wildcard $(SHIM_DIR)/**/*.rs) $(SHIM_DIR)/Cargo.toml
 
 all: $(KERNEL_IMG) $(INITRAMFS_IMG_DBG)
@@ -35,7 +39,7 @@ $(BUILDDIR).prepared: $(CONFIG)
 kernel.prepared: $(BUILDDIR).prepared
 	cd $(BUILDDIR)/$(KERNEL_SUBMODULE); \
 	    KCONFIG_ALLCONFIG=$(CONFIG) make allnoconfig && \
-	    $(MAKE) prepare scripts
+	    $(MAKE) $(OBJTOOL_OPTS) prepare scripts
 	touch $@
 
 $(BUILDDIR)/$(ZFSONLINUX_SUBMODULE).prepared: $(BUILDDIR).prepared
@@ -60,7 +64,7 @@ zfs.prepared: kernel.prepared $(BUILDDIR)/$(ZFSONLINUX_SUBMODULE).prepared
 
 kernel-img: $(KERNEL_IMG)
 $(KERNEL_IMG): zfs.prepared kernel.prepared
-	cd $(BUILDDIR)/$(KERNEL_SUBMODULE); $(MAKE)
+	cd $(BUILDDIR)/$(KERNEL_SUBMODULE); $(MAKE) $(OBJTOOL_OPTS)
 	mv $(BUILDDIR)/$(KERNEL_SUBMODULE)/arch/x86/boot/bzImage $(KERNEL_IMG)
 
 $(ZFS_TOOLS): zfs.prepared
