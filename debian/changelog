@@ -1,3 +1,31 @@
+proxmox-backup-restore-image (1.1.0) trixie; urgency=medium
+
+  * kernel:
+    - update to Ubuntu-7.0.0-43.43i1, based on Linux 7.0.14. This removes
+      support for bcachefs and System V-family filesystems, whose drivers
+      are no longer included upstream. Ext3 remains supported through ext4.
+    - enable KVM guest optimizations, including the paravirtualized clock
+      and spinlocks, as well as x2APIC and virtio-scsi support.
+
+  * ZFS: update to 2.4.4 for compatibility with newer pool features and
+    Linux 7.0.
+
+  * fix #7500: file restore: add EROFS support to restore files from volumes
+    used by systems such as Home Assistant OS, including compressed data
+    and POSIX ACLs.
+
+  * file restore: add SquashFS support with ZLIB, LZ4, LZO, XZ and ZSTD
+    decompression.
+
+  * initramfs:
+    - use the registered ZFS device number instead of a fixed value to avoid
+      failures when the assigned device minor changes.
+    - wait for BusyBox helper installation before starting the restore
+      daemon or debug shell, and report installation failures instead of
+      silently continuing.
+
+ -- Proxmox Support Team <support@proxmox.com>  Thu, 29 Oct 2026 14:30:26 +0100
+
 proxmox-backup-restore-image (1.0.0) trixie; urgency=medium
 
   * re-build for Debian 13 "Trixie" based Proxmox VE 9.
