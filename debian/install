@@ -1,2 +1,5 @@
-build/bzImage /usr/lib/x86_64-linux-gnu/proxmox-backup/file-restore/
-build/initramfs/initramfs.img /usr/lib/x86_64-linux-gnu/proxmox-backup/file-restore/
+#!/usr/bin/dh-exec
+[amd64] build/bzImage /usr/lib/x86_64-linux-gnu/proxmox-backup/file-restore/
+[amd64] build/initramfs/initramfs.img /usr/lib/x86_64-linux-gnu/proxmox-backup/file-restore/
+[loong64] build/vmlinux.elf /usr/lib/loongarch64-linux-gnu/proxmox-backup/file-restore/
+[loong64] build/initramfs/initramfs.img /usr/lib/loongarch64-linux-gnu/proxmox-backup/file-restore/

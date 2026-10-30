@@ -1,3 +1,5 @@
+include /usr/share/dpkg/architecture.mk
+
 PACKAGE=proxmox-restore-vm-data
 
 BUILDDIR=build
@@ -9,7 +11,15 @@ KERNEL_SUBMODULE=submodules/ubuntu-kernel
 SHIM_DIR=init-shim-rs
 RUST_TARGET ?= $(or $(DEB_HOST_RUST_TYPE),$(CARGO_BUILD_TARGET),$(shell rustc -vV | sed -n 's/^host: //p'))
 
-KERNEL_IMG=$(BUILDDIR)/bzImage
+ifeq ($(DEB_BUILD_ARCH),loong64)
+	ARCH=loongarch
+	IMG_NAME=vmlinux.elf
+else
+	ARCH=x86
+	IMG_NAME=bzImage
+endif
+
+KERNEL_IMG=$(BUILDDIR)/$(IMG_NAME)
 INITRAMFS_IMG=$(INITRAMFS_BUILDDIR)/initramfs.img
 INITRAMFS_IMG_DBG=$(INITRAMFS_BUILDDIR)/initramfs-debug.img
 
@@ -65,7 +75,7 @@ zfs.prepared: kernel.prepared $(BUILDDIR)/$(ZFSONLINUX_SUBMODULE).prepared
 kernel-img: $(KERNEL_IMG)
 $(KERNEL_IMG): zfs.prepared kernel.prepared
 	cd $(BUILDDIR)/$(KERNEL_SUBMODULE); $(MAKE) $(OBJTOOL_OPTS)
-	mv $(BUILDDIR)/$(KERNEL_SUBMODULE)/arch/x86/boot/bzImage $(KERNEL_IMG)
+	mv $(BUILDDIR)/$(KERNEL_SUBMODULE)/arch/$(ARCH)/boot/$(IMG_NAME) $(KERNEL_IMG)
 
 $(ZFS_TOOLS): zfs.prepared
 	cd $(BUILDDIR)/$(ZFSONLINUX_SUBMODULE); \

@@ -77,20 +77,20 @@ fi
 echo "getting base dependencies"
 
 add_pkgs "
-    busybox:amd64 \
-    libstdc++6:amd64 \
-    libssl3t64:amd64 \
-    libacl1:amd64 \
-    libblkid1:amd64 \
-    libuuid1:amd64 \
-    zlib1g:amd64 \
-    libzstd1:amd64 \
-    liblz4-1:amd64 \
-    liblzma5:amd64 \
-    libgcrypt20:amd64 \
-    libtirpc3t64:amd64 \
-    lvm2:amd64 \
-    thin-provisioning-tools:amd64 \
+    busybox \
+    libstdc++6 \
+    libssl3t64 \
+    libacl1 \
+    libblkid1 \
+    libuuid1 \
+    zlib1g \
+    libzstd1 \
+    liblz4-1 \
+    liblzma5 \
+    libgcrypt20 \
+    libtirpc3t64 \
+    lvm2 \
+    thin-provisioning-tools \
 " 'base'
 
 if [ -z "$DOWNLOAD_ONLY" ]; then
@@ -123,9 +123,9 @@ cp -a pkgs/base pkgs/debug
 
 # add debug helpers for debug initramfs, packages from above are included too
 add_pkgs "
-    util-linux:amd64 \
-    gdb:amd64 \
-    strace:amd64 \
+    util-linux \
+    gdb \
+    strace \
 " 'debug'
 
 if [ -z "$DOWNLOAD_ONLY" ]; then
